@@ -8,3 +8,56 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+
+```{r}
+library(tidyverse)
+
+salmon <- read_csv("salmon_imports.csv")
+
+```
+
+```{r}
+#explore data for linear relationship
+
+explore_scatter <- ggplot(salmon, aes(x=year, y=salmon_fresh))+
+  geom_point()
+
+explore_scatter
+
+#over the relationship between year and imports looks fairly linear, and using a linear regression makes sense. 
+#there are some points that do not look to fit the linear trend
+```
+
+```{r}
+salmon_model <- lm(salmon_fresh ~ year, data = salmon)
+
+salmon_model
+
+imports = -14982940 + 7550(year)
+
+#the slope represents the incrimental change in salmon imports by year
+# the y intercept represents the number of imports at year 0 which really doesnt make any sense in the context of this dataset
+#this model is not suited to extrapolating back in time to find salmon imports in the past
+
+
+plot(salmon_model)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
