@@ -9,14 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
+#part 3.
 ```{r}
 library(tidyverse)
 
 salmon <- read_csv("salmon_imports.csv")
 
 ```
-
+#part 4. 
 ```{r}
 #explore data for linear relationship
 
@@ -28,35 +28,85 @@ explore_scatter
 #over the relationship between year and imports looks fairly linear, and using a linear regression makes sense. 
 #there are some points that do not look to fit the linear trend
 ```
-
+#part 5. 
 ```{r}
 salmon_model <- lm(salmon_fresh ~ year, data = salmon)
 
 salmon_model
 
-imports = -14982940 + 7550(year)
+#imports = -14982940 + 7550(year)
 
 #the slope represents the incrimental change in salmon imports by year
 # the y intercept represents the number of imports at year 0 which really doesnt make any sense in the context of this dataset
 #this model is not suited to extrapolating back in time to find salmon imports in the past
 
 
-plot(salmon_model)
 
 ```
 
 
 
+#part 6.
+```{r}
+
+plot(salmon_model)
+
+#residuals seem to be mostly normally distributed
+#one potential outlier beyond cook's distance
+#normal looking qq
+
+par(mfrow = c(2,2))
+plot(salmon_model)
+```
 
 
+#part 7. 
+
+```{r}
+summary(salmon_model)
+
+#year significantly predicts salmon imports (p<0.001)
+#R^2 value is 0.9478 meaning 94.78% of the variability in y(imports) is determined by x(year)
+#5.22% of variance is not explained by year
+```
 
 
+#part 8.
+```{r}
+salmon_final_graph <- ggplot(salmon, aes(x = year, y = salmon_fresh)) + geom_point() +
+geom_smooth(method = lm, se = TRUE, size = 0.5, color = "gray20") + theme_bw() +
+scale_x_continuous(expand = c(0,0), limits = c(1990, 2017)) +
+labs(x = "Year", y = "U.S. Annual Fresh Salmon Imports\n(1,000 pounds)")
+salmon_final_graph
+```
 
 
+#part 9.
+```{r}
+new_years <- data.frame(year = c(2022, 2024, 2026, 2028))
+
+future_predict <- predict(salmon_model, newdata = new_years, interval = "confidence")
+
+future_predict
+
+predictions <- data.frame(new_years, future_predict)
+
+predictions
+```
+
+#part 10.
+
+```{r}
+pearsons <- cor.test(salmon$year, salmon$salmon_fresh)
+
+pearsons
+#strong positive correlation
+
+```
 
 
-
-
+The model (salmon imports = 7550(year)-14982940; imports in thousands of salmon) explains a significant amount of
+variance in salmon imports (F(1,26) = 471.9, p < 0.001, R2 = 0.9478, Pearson’s r = 0.974).”
 
 
 
